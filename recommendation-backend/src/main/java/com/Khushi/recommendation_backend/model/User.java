@@ -19,6 +19,8 @@ public class User implements Serializable {
     private String name;
     @Column(unique = true, nullable=false)
     private String email;
+    private String password;
+    private String role="USER";
 
     //for dynamic weighting
     private int interactionCount;

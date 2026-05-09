@@ -23,8 +23,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class MLClientService {
     private static final Logger log = LoggerFactory.getLogger(MLClientService.class);
-            @Value("${ml.service.url}")
-            private String url;
+//            @Value("${ml.service.url}")
+            private String url="http://ml-service:8000/recommend";
     private final RestTemplate restTemplate=new RestTemplateBuilder()
             .setConnectTimeout(Duration.ofSeconds(2))
             .setReadTimeout(Duration.ofSeconds(3))
@@ -50,6 +50,8 @@ public class MLClientService {
             request.put("movies", mlMovies);
             request.put("interactions", mlInteractions);
             long start=System.currentTimeMillis();
+            System.out.println("ML URL = " + url);
+            System.out.println("CALLING ML SERVICE");
             List<Map<String, Object>> response =
                     restTemplate.postForObject(url, request, List.class);
             long end=System.currentTimeMillis();
