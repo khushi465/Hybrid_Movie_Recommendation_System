@@ -9,6 +9,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -22,6 +23,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class MLClientService {
     private static final Logger log = LoggerFactory.getLogger(MLClientService.class);
+            @Value("${ml.service.url}")
+            private String url;
     private final RestTemplate restTemplate=new RestTemplateBuilder()
             .setConnectTimeout(Duration.ofSeconds(2))
             .setReadTimeout(Duration.ofSeconds(3))
@@ -30,7 +33,6 @@ public class MLClientService {
     @CircuitBreaker(name="mlService", fallbackMethod="fallbackRecommendations")
     public List<Long> getRankedMovies(Long userId, List<Movie> movies, List<Interaction> allInteractions){
         try {
-            String url = "http://localhost:8000/recommend";
 
             Map<String, Object> request = new HashMap<>();
             request.put("userId", userId);
