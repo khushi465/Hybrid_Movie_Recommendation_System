@@ -3,14 +3,21 @@ package com.Khushi.recommendation_backend.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "mysecretkeymysecretkeymysecretkey";
+    private final String SECRET =
+            "myverysecurejwtsecretkeyforhs256algorithm123456";
+
+    private final Key key =
+            Keys.hmacShaKeyFor(SECRET.getBytes());
 
     public String generateToken(String email) {
 
@@ -20,17 +27,15 @@ public class JwtUtil {
                 .setExpiration(
                         new Date(System.currentTimeMillis() + 1000 * 60 * 60)
                 )
-                .signWith(
-                        SignatureAlgorithm.HS256,
-                        SECRET
-                )
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String extractEmail(String token) {
 
-        Claims claims = Jwts.parser()
-                .setSigningKey(SECRET)
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
